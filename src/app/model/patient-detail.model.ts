@@ -1,4 +1,6 @@
 export class PatientDetail {
+  presId: number;
+  prescription: string;
   docId: number;
   docName: string;
   patId: number;

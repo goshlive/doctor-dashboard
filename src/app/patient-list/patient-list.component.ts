@@ -36,6 +36,7 @@ export class PatientListComponent implements OnInit {
         this.doctorId = this.getId();
       }
     });
+    this.getPatients();
   }
 
   getId() {
@@ -47,12 +48,12 @@ export class PatientListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getPatients();
+
   }
 
 
   getPatientReminders(row){
-    this.router.navigate([`/patient/${row.patId}/reminders`]);
+    this.router.navigate([`/patient/${row.patId}/${row.presId}`]);
   }
 
   getReminders(reminders: Reminder[]) {

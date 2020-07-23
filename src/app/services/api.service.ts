@@ -8,6 +8,7 @@ import { PatientDetail } from '../model/patient-detail.model';
 import { Reminder } from '../model/reminder.model';
 import { Patient } from '../model/patient.model';
 import { Graph } from '../model/graph.model';
+import { ReminderForm } from '../model/reminder.form.model';
 
 @Injectable({
   providedIn: 'root'
@@ -78,4 +79,24 @@ export class ApiService {
   getGraphData(patientId: number): Observable<Graph> {
     return this.http.get<Graph>(`${this.url}/patient-graph/${patientId}`).pipe(first());
   }
+
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json'
+    })
+  };
+
+  postReminder(reminder: ReminderForm): Observable<any>{
+    return this.http.post<any>(
+      `${this.url}/post/reminder`, reminder, this.httpOptions
+    ).pipe(
+      map(
+        results => {
+          console.log(results);
+          return results;
+        }
+      )
+    )
+  }
+
 }

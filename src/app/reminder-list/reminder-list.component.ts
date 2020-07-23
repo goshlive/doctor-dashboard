@@ -31,6 +31,7 @@ export class ReminderListComponent implements OnInit {
   reminders: Reminder[];
   expandedElement: any;
   patient: Patient;
+  presId: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -47,23 +48,17 @@ export class ReminderListComponent implements OnInit {
   }
 
   showForm() {
-    this.router.navigate([`/patient/${this.patientId}/create-reminder`])
+    this.router.navigate([`/patient/${this.patientId}/${this.presId}/create-reminder`])
   }
 
   ngOnInit(): void {
     this.getReminders();
   }
 
-  getPatientReminders(row){
-    this.router.navigate([`/patient/${row.id}/reminders`]);
-  }
-
   getReminders() {
     this.patientId = +this.activatedRoute.snapshot.paramMap.get('id');
+    this.presId = +this.activatedRoute.snapshot.paramMap.get('presId');
 
-    if (!this.patientId) {
-      this.router.navigate(['patient-list']);
-    }
     this.apiService.getDetailPatientById(this.patientId).subscribe(patient =>{
       this.patient = patient;
     });
@@ -83,20 +78,13 @@ export class ReminderListComponent implements OnInit {
     this.apiService.getGraphData(this.patientId).subscribe(graph => {
       this.graph = graph;
     });
-    /*this.graphData.push(this.graph.unfinished0);
+    this.graphData.push(this.graph.unfinished0);
     this.graphData.push(this.graph.unfinished1);
     this.graphData.push(this.graph.unfinished2);
     this.graphData.push(this.graph.unfinished3);
     this.graphData.push(this.graph.unfinished4);
     this.graphData.push(this.graph.unfinished5);
-    this.graphData.push(this.graph.unfinished6);*/
-    this.graphData.push(65);
-    this.graphData.push(55);
-    this.graphData.push(43);
-    this.graphData.push(12);
-    this.graphData.push(29);
-    this.graphData.push(34);
-    this.graphData.push(20);
+    this.graphData.push(this.graph.unfinished6);
   }
 
   applyFilter(filterValue: string) {
@@ -116,8 +104,8 @@ export class ReminderListComponent implements OnInit {
   };
 
   public barChartType = 'bar';
-  public barChartLabels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-  public barData = [65, 59, 80, 81, 56, 55, 40]
+  public barChartLabels = [];//['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  public barData = [];//[65, 59, 80, 81, 56, 55, 40]
 
   public barChartLegend = true;
   public barChartData = [

@@ -1,24 +1,16 @@
-<!--
-
 <mat-toolbar color="primary">
-  <span>Clinic Reminder Dashboard</span>
+  <span>e-Doctor Dashboard</span>
 </mat-toolbar>
 
 <div layout="row" class="container" layout-margin>
-  <h1>New Reminder for {{mappingInfo?.patientName}}</h1>
+  <h1>New Reminder for {{patient?.name}}</h1>
   <hr>
 
   <form class="tp-form" #reminderForm="ngForm" (ngSubmit)="onSubmit()">
 
       <mat-form-field class="tp-full-width">
-        <mat-label>Reminder Title</mat-label>
-        <input matInput name="title" [(ngModel)]="reminderModel.title">
-      </mat-form-field>
-
-      <br>
-      <mat-form-field class="tp-full-width">
-        <mat-label>Reminder Description</mat-label>
-        <textarea matInput  name="desc" [(ngModel)]="reminderModel.desc"></textarea>
+        <mat-label>Reminder Message</mat-label>
+        <input matInput name="message" [(ngModel)]="reminderModel.message">
       </mat-form-field>
 
       <br>
@@ -43,5 +35,3 @@
   </form>
 
 </div>
-
--->

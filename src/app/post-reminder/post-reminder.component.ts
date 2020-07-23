@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule  } from '@angular/material/snack-bar';
-import { Reminder } from '../model/reminder.model';
+import { ReminderForm } from '../model/reminder.form.model';
+import { Patient } from '../model/patient.model';
 
 @Component({
   selector: 'app-post-reminder',
@@ -11,39 +12,38 @@ import { Reminder } from '../model/reminder.model';
 })
 export class PostReminderComponent implements OnInit {
 
+  patientId: number;
   presId: number;
-
-  ngOnInit(): void {
-  }
-
-  /*
-  reminderModel = new Reminder('','',0,'',{mid: 0});
+  patient: Patient;
+  reminderModel = new ReminderForm(0,'',0,'');
 
   constructor(
     private apiService: ApiService,
     private activatedRoute: ActivatedRoute,
     private _snackBar: MatSnackBar,
     private router: Router
-  ) { }
+  ) {
+    this.patientId = +this.activatedRoute.snapshot.paramMap.get('id');
+    this.presId = +this.activatedRoute.snapshot.paramMap.get('presId');
+    this.apiService.getDetailPatientById(this.patientId).subscribe(patient =>{
+      this.patient = patient;
+    });
+   }
 
   ngOnInit(): void {
-    this.id = +this.activatedRoute.snapshot.paramMap.get('id');
-    this.remindersService.getMappingById(this.mid).subscribe(result=> {
-      this.mappingInfo = result;
-      this.reminderModel.mapping.mid = this.mappingInfo.mid;
-    });
   }
 
   onSubmit(){
-    this.remindersService.postReminder(this.reminderModel).subscribe(result => {
+    this.reminderModel.id = this.presId;
+    this.apiService.postReminder(this.reminderModel).subscribe(result => {
       console.log(result);
       this._snackBar.open('data Saved', 'dismiss', {
         duration:3000
       });
       setTimeout(() => {
-          this.router.navigate([`/reminders/${this.mappingInfo.mid}`]);
+          this.router.navigate([`/patient/${this.patientId}/${this.presId}`]);
       }, 3000);
     });
   }
-*/
+
 }
