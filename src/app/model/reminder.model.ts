@@ -8,8 +8,10 @@ export class Reminder {
     priority: string;
     duration: number;
     lateInd: number;
+    elapsed: string;
     createDt: string;
     doneDt: string;
+    doneStatus: number;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

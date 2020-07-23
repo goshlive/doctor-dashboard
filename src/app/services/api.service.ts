@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, ReplaySubject } from 'rxjs';
-import { map, tap } from   'rxjs/operators';
+import { map, tap, first } from   'rxjs/operators';
 
 import { User } from '../model/user.model';
-import { Patient } from '../model/patient.model';
+import { PatientDetail } from '../model/patient-detail.model';
 import { Reminder } from '../model/reminder.model';
+import { Patient } from '../model/patient.model';
+import { Graph } from '../model/graph.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  url = 'http://62.171.189.140:9090/api';
+  //url = 'http://62.171.189.140:9090/api';
+  url = 'http://localhost:8080/api';
 
   private authUser = new ReplaySubject<any>(1);
   public authUserObservable = this.authUser.asObservable();
@@ -38,6 +41,20 @@ export class ApiService {
     return user;
   }
 
+  getDetailPatientById(pid: number): Observable<Patient> {
+    return this.http.get<Patient>(`${this.url}/patient/${pid}`).pipe(first())
+  }
+
+  getAllRemindersByPatientId(pid: number): Observable<Reminder[]> {
+    return this.http.get<Reminder[]>(`${this.url}/patient/${pid}/reminders/`).pipe(
+      map(
+        data => {
+          return data.map((reminder) => new Reminder(reminder));
+        }
+      )
+    )
+  }
+
   getAllReminders(doctorId: number): Observable<Reminder[]> {
     return this.http.get<Reminder[]>(`${this.url}/patients/doctor/${doctorId}`).pipe(
       map(
@@ -48,13 +65,17 @@ export class ApiService {
     )
   }
 
-  getAllPatients(doctorId: number): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.url}/patients/doctor/${doctorId}`).pipe(
+  getAllPatientDetails(doctorId: number): Observable<PatientDetail[]> {
+    return this.http.get<PatientDetail[]>(`${this.url}/patient-details/doctor/${doctorId}`).pipe(
       map(
         data => {
-          return data.map((patient) => new Patient(patient));
+          return data.map((patient) => new PatientDetail(patient));
         }
       )
     )
+  }
+
+  getGraphData(patientId: number): Observable<Graph> {
+    return this.http.get<Graph>(`${this.url}/patient-graph/${patientId}`).pipe(first());
   }
 }

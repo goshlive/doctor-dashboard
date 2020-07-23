@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 
 export class Patient {
   id: number;
+  name: string;
   firstname: string;
   lastname: string;
   createDt: string;

@@ -20,6 +20,7 @@ export class AppComponent {
     this.apiService.authUserObservable.subscribe(user => {
       if (user) {
         this.user = user;
+        localStorage.setItem('userId', JSON.stringify(this.user.id));
       } else {
         this.user = null;
       }
@@ -28,6 +29,7 @@ export class AppComponent {
 
   logout() {
     this.user = null;
+    localStorage.removeItem('userId');
     this.router.navigate(['login']);
   }
 

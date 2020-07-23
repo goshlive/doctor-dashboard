@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { ApiService } from '../services/api.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
   loginInvalid = false;
 
   constructor(
+    private _snackBar: MatSnackBar,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
@@ -26,6 +28,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    localStorage.clear();
     this.loginForm = this.formBuilder.group({
     username: ['', Validators.required],
     password: ['', Validators.required]
@@ -48,9 +51,13 @@ export class LoginComponent implements OnInit {
     .pipe(first())
     .subscribe(
         data => {
+          localStorage.setItem('user', JSON.stringify(data));
           this.router.navigate(['patient-list']);
         },
         err => {
+          this._snackBar.open('Login failed: Wrong Username or Password', 'dismiss', {
+            duration:3000
+          });
           this.loading = false;
         }
     );

@@ -1,0 +1,86 @@
+<mat-toolbar color="primary">
+  <span>Reminders History for {{patient?.name}}</span>
+</mat-toolbar>
+<hr/>
+<div layout="row">
+  <div flex><button mat-raised-button color="primary" (click)="showForm()">Send New Reminder</button></div>
+</div>
+<hr/>
+<div layout="row" class="container" layout-margin>
+
+  <mat-card class = "graph-card">
+    <mat-card-content>
+      <div style="display: block;">
+        <canvas baseChart
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [legend]="barChartLegend"
+                [chartType]="barChartType">
+        </canvas>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <div class="mat-elevation-z8">
+    <mat-form-field style="margin:20px">
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+    <table mat-table [dataSource]="dsReminders" matSort>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+      <ng-container matColumnDef="priority">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Priority </th>
+        <td mat-cell *matCellDef="let element"> {{element.priority}} </td>
+      </ng-container>
+      <ng-container matColumnDef="duration">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Duration </th>
+        <td mat-cell *matCellDef="let element"> {{element.duration}} hour (s) </td>
+      </ng-container>
+      <ng-container matColumnDef="createDt">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.createDt | date:'medium'}}  </td>
+      </ng-container>
+
+      <ng-container matColumnDef="doneStatus">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-icon *ngIf="element.doneStatus==0">alarm</mat-icon>
+          <mat-icon *ngIf="element.doneStatus==1" [ngStyle]="{'color':'green'}">done_all</mat-icon>
+          <mat-icon *ngIf="element.doneStatus==2" [ngStyle]="{'color':'red'}">done</mat-icon>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+      <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+        class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandedElement = expandedElement === element ? null : element">
+      </tr>
+
+<!--
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+          <div class="example-element-detail"
+               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+               <div class="example-element-description">
+                <b>Elapsed:</b> {{element.elapsed}}
+               </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+      <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+        class="example-element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandedElement = expandedElement === element ? null : element">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+-->
+    </table>
+    <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
