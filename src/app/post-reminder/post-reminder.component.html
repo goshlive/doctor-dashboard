@@ -2,36 +2,34 @@
   <span>e-Doctor Dashboard</span>
 </mat-toolbar>
 
-<div layout="row" class="container" layout-margin>
-  <h1>New Reminder for {{patient?.name}}</h1>
-  <hr>
-
-  <form class="tp-form" #reminderForm="ngForm" (ngSubmit)="onSubmit()">
-
-      <mat-form-field class="tp-full-width">
-        <mat-label>Reminder Message</mat-label>
-        <input matInput name="message" [(ngModel)]="reminderModel.message">
-      </mat-form-field>
-
-      <br>
-      <mat-form-field class="tp-half-width">
-        <mat-label>Duration</mat-label>
-        <input matInput type="number"  name="duration" [(ngModel)]="reminderModel.duration">
-        <span matSuffix>hour(s)</span>
-      </mat-form-field>
-
-      <br>
-      <mat-form-field class="tp-half-width">
-        <mat-label>Priority</mat-label>
-        <mat-select  name="priority" [(ngModel)]="reminderModel.priority">
-          <mat-option value="HIGH">HIGH</mat-option>
-          <mat-option value="MIDDLE">MIDDLE</mat-option>
-          <mat-option value="LOW">LOW</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <br>
-
-      <button mat-raised-button color="primary" type="submit">Save Reminder</button>
-  </form>
-
-</div>
+<mat-card>
+  <mat-card-content justify-content: center>
+    <div layout="row" layout-align="center center">
+      <h1>New Reminder for {{patient?.name}}</h1>
+      <hr>
+      <form #reminderForm="ngForm" (ngSubmit)="onSubmit()">
+          <mat-form-field class="tp-full-width">
+            <mat-label>Reminder Message</mat-label>
+            <input matInput name="message" [(ngModel)]="reminderModel.message">
+          </mat-form-field>
+          <br>
+          <mat-form-field class="tp-full-width">
+            <mat-label>Duration</mat-label>
+            <input matInput type="number"  name="duration" [(ngModel)]="reminderModel.duration">
+            <span matSuffix>hour(s)</span>
+          </mat-form-field>
+          <br>
+          <mat-form-field class="tp-full-width">
+            <mat-label>Priority</mat-label>
+            <mat-select  name="priority" [(ngModel)]="reminderModel.priority">
+              <mat-option value="HIGH">HIGH</mat-option>
+              <mat-option value="MIDDLE">MIDDLE</mat-option>
+              <mat-option value="LOW">LOW</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <br>
+          <button mat-raised-button color="primary" type="submit">Save Reminder</button>
+      </form>
+    </div>
+  </mat-card-content>
+</mat-card>

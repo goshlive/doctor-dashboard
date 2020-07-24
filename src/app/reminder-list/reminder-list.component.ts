@@ -7,9 +7,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 
 import { Reminder } from '../model/reminder.model';
-import { BaseChartDirective } from 'ng2-charts';
-import { Patient } from '../model/patient.model';
+import { BaseChartDirective, Label } from 'ng2-charts';
 import { Graph } from '../model/graph.model';
+import { Patient } from '../model/patient.model';
 
 @Component({
   selector: 'app-reminder-list',
@@ -21,31 +21,40 @@ export class ReminderListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  private doctorId: number;
   private patientId: number;
 
   columnsToDisplay: string[] = ['id', 'priority', 'duration', 'createDt', 'doneStatus'];
   dsReminders: MatTableDataSource<Reminder>;
-  graph: Graph;
-  graphData: number [] = [];
   reminders: Reminder[];
   expandedElement: any;
   patient: Patient;
   presId: number;
 
+  @ViewChild(BaseChartDirective)
+  public chart: BaseChartDirective;
+
+  public barChartOptions = {
+    scaleShowVerticalLines: false,
+    responsive: true
+  };
+
+  private graphData: Graph;
+  public chartData = new Array();
+  public barChartType = 'bar';
+  public barChartLegend = true;
+  public barChartLabels: Label[] = new Array();
+  public barChartData = [
+    {
+      data: new Array(),
+      label: '',
+    }
+  ];
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private apiService: ApiService,
     private router: Router
-  ) {
-    this.apiService.authUserObservable.subscribe(user => {
-      if (user) {
-        this.doctorId = user.ownerId;
-      } else if (localStorage.length) {
-        this.doctorId = +localStorage.getItem('userId');
-      }
-    });
-  }
+  ) {}
 
   showForm() {
     this.router.navigate([`/patient/${this.patientId}/${this.presId}/create-reminder`])
@@ -59,32 +68,25 @@ export class ReminderListComponent implements OnInit {
     this.patientId = +this.activatedRoute.snapshot.paramMap.get('id');
     this.presId = +this.activatedRoute.snapshot.paramMap.get('presId');
 
-    this.apiService.getDetailPatientById(this.patientId).subscribe(patient =>{
+    this.apiService.getPatientById(this.patientId).subscribe(patient =>{
       this.patient = patient;
-    });
 
-    this.apiService.getAllRemindersByPatientId(this.patientId).subscribe(reminders => {
-      this.reminders = reminders;
-      this.dsReminders = new MatTableDataSource(reminders);
-      this.dsReminders.paginator = this.paginator;
-      this.dsReminders.sort = this.sort;
-    });
+      this.apiService.getRemindersByPatientId(this.patientId).subscribe(reminders => {
+        this.reminders = reminders;
+        this.dsReminders = new MatTableDataSource(reminders);
+        this.dsReminders.paginator = this.paginator;
+        this.dsReminders.sort = this.sort;
 
-    this.getGraphData();
-    this.populateChart();
+        this.getGraphData();
+      });
+    });
   }
 
   getGraphData() {
     this.apiService.getGraphData(this.patientId).subscribe(graph => {
-      this.graph = graph;
+      this.graphData = new Graph(graph);
+      this.populateChart();
     });
-    this.graphData.push(this.graph.unfinished0);
-    this.graphData.push(this.graph.unfinished1);
-    this.graphData.push(this.graph.unfinished2);
-    this.graphData.push(this.graph.unfinished3);
-    this.graphData.push(this.graph.unfinished4);
-    this.graphData.push(this.graph.unfinished5);
-    this.graphData.push(this.graph.unfinished6);
   }
 
   applyFilter(filterValue: string) {
@@ -95,95 +97,18 @@ export class ReminderListComponent implements OnInit {
     }
   }
 
-  @ViewChild(BaseChartDirective)
-  public chart: BaseChartDirective;
-
-  public barChartOptions = {
-    scaleShowVerticalLines: false,
-    responsive: true
-  };
-
-  public barChartType = 'bar';
-  public barChartLabels = [];//['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-  public barData = [];//[65, 59, 80, 81, 56, 55, 40]
-
-  public barChartLegend = true;
-  public barChartData = [
-    {
-      data: this.barData,
-      label: 'Overdue count for last 7 days'
-    }
-  ];
-
-
-
   populateChart(){
-    const chartData = [];
-
-
-    for (let i=0; i<7; i++){
+    for (let i=7; i>0; i--){
       var d = new Date();
       d.setDate(d.getDate() - i);
-      chartData.push({
-        label: d.toDateString(),
-        value: 0
-      });
-      chartData[this.graphData[i]].value++;
+      this.barChartLabels.push(d.toLocaleDateString());
     }
-
-    chartData.forEach(element => {
-      this.chart.labels.push(element.label);
-      this.chart.datasets.forEach((dataset)=>{
-        dataset.data.push(element.value);
-      });
-    });
-
-
-    this.chart.update();
-
-    //console.log(chartData);
+    this.barChartData.push(
+      {
+        label: "Unfinished reminders last 7 days",
+        data: [this.graphData.unfinished0,this.graphData.unfinished1, this.graphData.unfinished2, this.graphData.unfinished3,
+        this.graphData.unfinished4, this.graphData.unfinished5, this.graphData.unfinished6]
+      }
+    );
   }
-
-  /*
-  //for bar chart
-  @ViewChild(BaseChartDirective)
-  public chart: BaseChartDirective;
-  public chartOptions = {
-    responsive: true,
-    scaleShowVerticalLines: true,
-  };
-  public chartType = 'bar';
-  public chartLabels =  ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
-  public chartData = [
-    {
-        label: 'Overdue count for last 7 days'
-    }
-  ];
-  chartLegend = true;
-
-  populateChart(){
-    const chartData = [];
-
-    console.log(this.graphData);
-
-    for (let i=0; i<7; i++){
-      var d = new Date();
-      d.setDate(d.getDate() - i);
-      chartData.push({
-        label: d.toDateString(),
-        value: this.graphData[i]
-      });
-    }
-
-    chartData.forEach(element => {
-      this.chart.labels.push(element.label);
-      this.chart.datasets.forEach((dataset)=>{
-        dataset.data.push(element.value);
-      });
-    });
-
-
-    this.chart.update();
-  }
-  */
 }

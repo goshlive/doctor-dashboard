@@ -6,9 +6,9 @@ import { map, tap, first } from   'rxjs/operators';
 import { User } from '../model/user.model';
 import { PatientDetail } from '../model/patient-detail.model';
 import { Reminder } from '../model/reminder.model';
-import { Patient } from '../model/patient.model';
 import { Graph } from '../model/graph.model';
 import { ReminderForm } from '../model/reminder.form.model';
+import { Patient } from '../model/patient.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,11 +42,11 @@ export class ApiService {
     return user;
   }
 
-  getDetailPatientById(pid: number): Observable<Patient> {
-    return this.http.get<Patient>(`${this.url}/patient/${pid}`).pipe(first())
+  getPatientById(pid: number): Observable<Patient> {
+    return this.http.get<Patient>(`${this.url}/patient/${pid}`).pipe()
   }
 
-  getAllRemindersByPatientId(pid: number): Observable<Reminder[]> {
+  getRemindersByPatientId(pid: number): Observable<Reminder[]> {
     return this.http.get<Reminder[]>(`${this.url}/patient/${pid}/reminders/`).pipe(
       map(
         data => {
@@ -77,7 +77,13 @@ export class ApiService {
   }
 
   getGraphData(patientId: number): Observable<Graph> {
-    return this.http.get<Graph>(`${this.url}/patient-graph/${patientId}`).pipe(first());
+    return this.http.get<Graph>(`${this.url}/patient-graph/${patientId}`).pipe(
+      map(
+        data => {
+          return data;
+        }
+      )
+    )
   }
 
   httpOptions = {

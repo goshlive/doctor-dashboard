@@ -3,7 +3,6 @@ export class Graph {
   docName: string;
   patId: number;
   patName: string;
-  createDt: Date;
   unfinished0: number;
   unfinished1: number;
   unfinished2: number;
@@ -13,7 +12,6 @@ export class Graph {
   unfinished6: number;
 
   constructor(values: Object = {}) {
-      Object.assign(this, values);
+    Object.assign(this, values);
   }
-
 }

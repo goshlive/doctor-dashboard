@@ -21,7 +21,7 @@ export class PatientListComponent implements OnInit {
 
   private doctorId: number;
 
-  columnsToDisplay: string[] = ['patId', 'patName', 'unfinishedHigh', 'unfinishedMiddle', 'unfinishedLow'];
+  columnsToDisplay: string[] = ['id', 'name', 'unfinishedHigh', 'unfinishedMiddle', 'unfinishedLow'];
   dsPatients: MatTableDataSource<PatientDetail>;
   patients: PatientDetail[] = [];
 
@@ -53,7 +53,7 @@ export class PatientListComponent implements OnInit {
 
 
   getPatientReminders(row){
-    this.router.navigate([`/patient/${row.patId}/${row.presId}`]);
+    this.router.navigate([`/patient/${row.id}/${row.presId}`]);
   }
 
   getReminders(reminders: Reminder[]) {
@@ -70,7 +70,8 @@ export class PatientListComponent implements OnInit {
     });
   }
 
-  applyFilter(filterValue: string) {
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
     this.dsPatients.filter = filterValue.trim().toLowerCase();
 
     if (this.dsPatients.paginator) {
