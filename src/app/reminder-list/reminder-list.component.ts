@@ -98,7 +98,7 @@ export class ReminderListComponent implements OnInit {
   }
 
   populateChart(){
-    for (let i=6; i>=0; i--){
+    for (let i=0; i<7; i++){
       var d = new Date();
       d.setDate(d.getDate() - i);
       this.barChartLabels.push(d.toLocaleDateString());
