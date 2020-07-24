@@ -98,14 +98,14 @@ export class ReminderListComponent implements OnInit {
   }
 
   populateChart(){
-    for (let i=7; i>0; i--){
+    for (let i=6; i>=0; i--){
       var d = new Date();
       d.setDate(d.getDate() - i);
       this.barChartLabels.push(d.toLocaleDateString());
     }
     this.barChartData.push(
       {
-        label: "Unfinished reminders last 7 days",
+        label: "Unfinished reminders for the last 7 days",
         data: [this.graphData.unfinished0,this.graphData.unfinished1, this.graphData.unfinished2, this.graphData.unfinished3,
         this.graphData.unfinished4, this.graphData.unfinished5, this.graphData.unfinished6]
       }

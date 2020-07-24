@@ -14,7 +14,6 @@ import { Patient } from '../model/patient.model';
   providedIn: 'root'
 })
 export class ApiService {
-  //url = 'http://62.171.189.140:9090/api';
   url = 'http://localhost:8080/api';
 
   private authUser = new ReplaySubject<any>(1);
