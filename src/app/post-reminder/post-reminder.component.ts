@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar, MatSnackBarModule  } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReminderForm } from '../model/reminder.form.model';
-import { PatientDetail } from '../model/patient-detail.model';
 import { Patient } from '../model/patient.model';
 
 @Component({
@@ -36,14 +35,17 @@ export class PostReminderComponent implements OnInit {
 
   onSubmit(){
     this.reminderModel.id = this.presId;
-    this.apiService.postReminder(this.reminderModel).subscribe(result => {
-      console.log(result);
-      this._snackBar.open('Reminder has been sent. Redirecting to Homepage.', 'dismiss', {
-        duration:5000
+    this.apiService.getPatientById(this.patientId).subscribe(patient =>{
+      this.patient = patient;
+      this.apiService.postReminder(this.reminderModel).subscribe(result => {
+        console.log(result);
+        this._snackBar.open('Reminder has been sent. Redirecting back to list.', 'dismiss', {
+          duration:3000
+        });
+        setTimeout(() => {
+            this.router.navigate([`/patient/${this.patientId}/${this.presId}`]);
+        }, 3000);
       });
-      setTimeout(() => {
-          this.router.navigate([`/patient/${this.patientId}/${this.presId}`]);
-      }, 3000);
     });
   }
 

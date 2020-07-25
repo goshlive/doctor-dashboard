@@ -23,7 +23,7 @@ export class ReminderListComponent implements OnInit {
 
   private patientId: number;
 
-  columnsToDisplay: string[] = ['id', 'priority', 'duration', 'createDt', 'doneStatus'];
+  columnsToDisplay: string[] = ['id', 'message', 'priority', 'duration', 'createDt', 'doneStatus'];
   dsReminders: MatTableDataSource<Reminder>;
   reminders: Reminder[];
   expandedElement: any;
@@ -89,7 +89,8 @@ export class ReminderListComponent implements OnInit {
     });
   }
 
-  applyFilter(filterValue: string) {
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
     this.dsReminders.filter = filterValue.trim().toLowerCase();
 
     if (this.dsReminders.paginator) {
